@@ -1,8 +1,10 @@
 # Overview
 
-Produce messages to and consume messages from a Kafka cluster using the Java Producer and Consumer, and Kafka Streams API.
+Produce messages to a Kafka cloud cluster using the Java Producer API.
 
 
 # Documentation
 
-You can find the documentation and instructions for running this Java example at [https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/java.html](https://docs.confluent.io/platform/current/tutorials/examples/clients/docs/java.html?utm_source=github&utm_medium=demo&utm_campaign=ch.examples_type.community_content.clients-ccloud)
+build code: mvn clean install
+run code: mvn exec:java -Dexec.mainClass="io.confluent.examples.clients.cloud.ProducerExample" -Dexec.args="C:\Work\Forgerock\Workspace\Kafka\java.config testfrim2 5"
+arguments: config location, topic name, number of records

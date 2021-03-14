@@ -1,0 +1,35 @@
+/*
+ * Copyright 2014-2017 ForgeRock AS. All Rights Reserved
+ *
+ * Use of this code requires a commercial software license with ForgeRock AS.
+ * or with one of its affiliates. All use shall be exclusively subject
+ * to such license between the licensee and ForgeRock AS.
+ */
+
+/* +---------------------------------------------------+
+ *  ----------- Contract Tests configuration ------------
+ *  +---------------------------------------------------+
+ */
+
+import org.identityconnectors.common.security.GuardedString
+
+
+configuration{
+    ssl = false
+    host="__configureme__"
+    remoteUser="__configureme__"
+    password=new GuardedString("__configureme__".toCharArray())
+}
+
+environments {
+    CaseSuccess{
+        configuration {
+            ssl = true
+        }
+    }
+    CaseOther {
+        configuration {
+            remoteUser="FakeAdmin"
+        }
+    }
+}

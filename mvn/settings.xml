@@ -111,23 +111,23 @@ under the License.
   <servers>
 
     <server>
-      <username>er.anuragkumar</username>
-      <password>Forgerock@1801!</password>
+      <username>backstageusername</username>
+      <password>backstagepassword</password>
       <id>archetype</id>
     </server>
     <server>
-      <username>er.anuragkumar</username>
-      <password>Forgerock@1801!</password>
+     <username>backstageusername</username>
+      <password>backstagepassword</password>
       <id>forgerock-staging-repository</id>
     </server>
     <server>
-      <username>er.anuragkumar</username>
-      <password>Forgerock@1801!</password>
+     <username>backstageusername</username>
+      <password>backstagepassword</password>
       <id>forgerock-snapshots-repository</id>
     </server>
     <server>
-      <username>er.anuragkumar</username>
-      <password>Forgerock@1801!</password>
+      <username>backstageusername</username>
+      <password>backstagepassword</password>
       <id>forgerock-plugins-repository</id>
     </server>
 

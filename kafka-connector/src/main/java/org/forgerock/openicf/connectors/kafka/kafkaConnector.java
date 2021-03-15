@@ -67,6 +67,8 @@ import org.identityconnectors.framework.spi.operations.SyncOp;
 import org.identityconnectors.framework.spi.operations.TestOp;
 import org.identityconnectors.framework.spi.operations.UpdateAttributeValuesOp;
 import org.identityconnectors.framework.spi.operations.UpdateOp;
+import org.identityconnectors.common.security.GuardedString; 
+import org.identityconnectors.common.security.GuardedString;   
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -118,14 +120,35 @@ public class kafkaConnector implements Connector, PoolableConnector, Authenticat
      * @param configuration the new {@link Configuration}
      * @see org.identityconnectors.framework.spi.Connector#init(org.identityconnectors.framework.spi.Configuration)
      */
-    public void init(final Configuration configuration) {
+    public void init(final Configuration kafkaconfig) {
+
+        kafkaConfiguration configuration = (kafkaConfiguration) kafkaconfig;
+
+        String clientId=configuration.getClientId();
+        String groupId=configuration.getGroupId();
+        String host=configuration.getHost();
+        String topic=configuration.getTopic();
+
+        GuardedStringAccessor accessor = new GuardedStringAccessor();
+        configuration.getPassword().access(accessor);
+            String password = new String(accessor.getArray());
+            accessor.clear();
+            
+            configuration.getRemoteUser().access(accessor);
+            String remoteuser = new String(accessor.getArray());
+            accessor.clear();
+        
+        String connection="org.apache.kafka.common.security.plain.PlainLoginModule required username='"+remoteuser+"' password='"+password+"';";
+        
+        System.out.println("system config : "+ clientId + "," +groupId+ "," +host+ "," +topic+ "," +connection);
+
         this.configuration = (kafkaConfiguration) configuration;
 
         Properties config = new Properties();
-        config.put("client.id", "test2");
-        config.put("group.id", "foo2");
-        config.put("bootstrap.servers", "pkc-419q3.us-east4.gcp.confluent.cloud:9092");
-        config.put("sasl.jaas.config","org.apache.kafka.common.security.plain.PlainLoginModule required username='XBUMPW75LOP3HHOA' password='z/vMao4rzhqScUBhoK3EDi7zolrJK/hH9WL18wah+5pl+kEE2eOLqhoAkwvgoHtK';");
+        config.put("client.id", clientId);
+        config.put("group.id", groupId);
+        config.put("bootstrap.servers", host);
+        config.put("sasl.jaas.config",connection);
         config.put("security.protocol","SASL_SSL");
         config.put("ssl.endpoint.identification.algorithm","");
         config.put("sasl.mechanism","PLAIN");
@@ -137,7 +160,7 @@ public class kafkaConnector implements Connector, PoolableConnector, Authenticat
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         config.put("session.timeout.ms", 50000);
         this.consumer = new KafkaConsumer<String,String>(config);
-        this.consumer.subscribe(Collections.singletonList("testfrim2"));
+        this.consumer.subscribe(Collections.singletonList(topic));
     }
 
     /**
@@ -335,34 +358,36 @@ public class kafkaConnector implements Connector, PoolableConnector, Authenticat
     public void executeQuery(ObjectClass objectClass, String query, ResultsHandler handler,
             OperationOptions options) {
 
-            // System.out.println("Entering executequery:"+objectClass+" , "+query+ " , "+options);
+            System.out.println("Entering executequery:"+objectClass+" , "+query+ " , "+options);
                 
-            //    try{
-            //        ConsumerRecords<String,String> records = this.consumer.poll(Duration.ofMillis(10000));
-            //        System.out.println("records recieved: "+records.count());
-            //         for (ConsumerRecord<String,String> record : records) {
-            //            String key = record.key();
-            //            String value = record.value();
-            //            System.out.printf("recon Received Message topic =%s, partition =%s, offset = %d, key = %s, value = %s\n", record.topic(), record.partition(), record.offset(), record.key(), record.value());
-            //            final ConnectorObjectBuilder builder = new ConnectorObjectBuilder();
-            //            builder.setUid(key);
-            //            builder.setName(key);
-            //            builder.addAttribute("firstName",value);
-            //            builder.addAttribute("lastName",value);
-            //            builder.addAttribute("email",value);
+               try{
+                   ConsumerRecords<String,String> records = this.consumer.poll(Duration.ofMillis(10000));
+                   System.out.println("records recieved: "+records.count());
+                    for (ConsumerRecord<String,String> record : records) {
+                       String key = record.key();
+                       String value = record.value();
+                       System.out.printf("recon Received Message topic =%s, partition =%s, offset = %d, key = %s, value = %s\n", record.topic(), record.partition(), record.offset(), record.key(), record.value());
+                       final ConnectorObjectBuilder builder = new ConnectorObjectBuilder();
+                       AttributeBuilder attributeBuilder = new AttributeBuilder();
+                       builder.setObjectClass(objectClass);
+                       builder.setUid(key);
+                       builder.setName(key);
+                       builder.addAttribute("firstName",value);
+                       builder.addAttribute("lastName",value);
+                       builder.addAttribute("email",value);
                          
-            //            ConnectorObject connectorObject = builder.build();
-            //            if (!handler.handle(connectorObject)) {
-            //             // Stop iterating because the handler stopped processing
-            //             break;
-            //         }
+                       ConnectorObject connectorObject = builder.build();
+                       if (!handler.handle(connectorObject)) {
+                        // Stop iterating because the handler stopped processing
+                        break;
+                    }
     
-            //        }
-            //        consumer.commitSync();
-            //       }
-            //      catch (Exception e) {
-            //          System.out.println(e);
-            //       }
+                   }
+                   consumer.commitSync();
+                  }
+                 catch (Exception e) {
+                     System.out.println(e);
+                  }
     }
 
     /**
@@ -387,22 +412,30 @@ public class kafkaConnector implements Connector, PoolableConnector, Authenticat
                    String value = record.value();
                    System.out.printf("Sync Received Message topic =%s, partition =%s, offset = %d, key = %s, value = %s\n", record.topic(), record.partition(), record.offset(), record.key(), record.value());
 
+
+                   Uid uid = new Uid(key);
+
                     final ConnectorObjectBuilder builder = new ConnectorObjectBuilder();
-                    builder.setUid(key);
+                    builder.setObjectClass(objectClass);
+                    builder.setUid(uid);
                     builder.setName(key);
                     builder.addAttribute("firstName",value);
                     builder.addAttribute("lastName",value);
-                    builder.addAttribute("email",value);
+                    builder.addAttribute("email",value+"@testmail.com");
                         
        
                    final SyncDeltaBuilder deltaBuilder = new SyncDeltaBuilder();
+                   deltaBuilder.setObjectClass(objectClass);
+                   deltaBuilder.setUid(uid);
                    deltaBuilder.setObject(builder.build());
                    deltaBuilder.setDeltaType(SyncDeltaType.CREATE);
                    deltaBuilder.setToken(new SyncToken(record.offset()));
 
                    SyncDelta connectorObject = deltaBuilder.build();
+                   System.out.println("handling object1:"+connectorObject);
                    if (!handler.handle(connectorObject)) {
                     // Stop iterating because the handler stopped processing
+                    System.out.println("handling object2:"+connectorObject);
                     break;
                 }
 

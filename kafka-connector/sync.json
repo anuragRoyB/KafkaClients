@@ -1,0 +1,64 @@
+{
+    "mappings" : [
+        {
+            "target" : "managed/user",
+            "source" : "system/kafkatest/Account",
+            "name" : "systemKafkatestAccount_managedUser",
+            "consentRequired" : false,
+            "icon" : null,
+            "displayName" : "systemKafkatestAccount_managedUser",
+            "properties" : [
+                {
+                    "target" : "mail",
+                    "source" : "email"
+                },
+                {
+                    "target" : "sn",
+                    "source" : "__NAME__"
+                },
+                {
+                    "target" : "givenName",
+                    "source" : "firstName"
+                },
+                {
+                    "target" : "userName",
+                    "source" : "lastName"
+                }
+            ],
+            "policies" : [
+                {
+                    "situation" : "CONFIRMED",
+                    "action" : "UPDATE"
+                },
+                {
+                    "situation" : "FOUND",
+                    "action" : "IGNORE"
+                },
+                {
+                    "situation" : "ABSENT",
+                    "action" : "CREATE"
+                },
+                {
+                    "situation" : "AMBIGUOUS",
+                    "action" : "IGNORE"
+                },
+                {
+                    "situation" : "MISSING",
+                    "action" : "IGNORE"
+                },
+                {
+                    "situation" : "SOURCE_MISSING",
+                    "action" : "IGNORE"
+                },
+                {
+                    "situation" : "UNQUALIFIED",
+                    "action" : "IGNORE"
+                },
+                {
+                    "situation" : "UNASSIGNED",
+                    "action" : "IGNORE"
+                }
+            ]
+        }
+    ]
+}

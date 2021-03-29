@@ -1,0 +1,108 @@
+{
+    "connectorRef" : {
+        "displayName" : "kafka Connector",
+        "bundleVersion" : "1.4.0.0-SNAPSHOT",
+        "systemType" : "provisioner.openicf",
+        "bundleName" : "org.forgerock.openicf.connectors.kafka-connector",
+        "connectorName" : "org.forgerock.openicf.connectors.kafka.kafkaConnector"
+    },
+    "poolConfigOption" : {
+        "maxObjects" : 1,
+        "maxIdle" : 1,
+        "maxWait" : 150000,
+        "minEvictableIdleTimeMillis" : 120000,
+        "minIdle" : 1
+    },
+    "resultsHandlerConfig" : {
+        "enableNormalizingResultsHandler" : false,
+        "enableFilteredResultsHandler" : false,
+        "enableCaseInsensitiveFilter" : false,
+        "enableAttributesToGetSearchResultsHandler" : false
+    },
+    "operationTimeout" : {
+        "CREATE" : -1,
+        "UPDATE" : -1,
+        "DELETE" : -1,
+        "TEST" : -1,
+        "SCRIPT_ON_CONNECTOR" : -1,
+        "SCRIPT_ON_RESOURCE" : -1,
+        "GET" : -1,
+        "RESOLVEUSERNAME" : -1,
+        "AUTHENTICATE" : -1,
+        "SEARCH" : -1,
+        "VALIDATE" : -1,
+        "SYNC" : -1,
+        "SCHEMA" : -1
+    },
+    "configurationProperties" : {
+        "host" : "pkc-419q3.us-east4.gcp.confluent.cloud:9092",
+        "remoteUser" : {
+            "$crypto" : {
+                "type" : "x-simple-encryption",
+                "value" : {
+                    "cipher" : "AES/CBC/PKCS5Padding",
+                    "stableId" : "openidm-sym-default",
+                    "salt" : "CEaxwaN5w3BON4BnEDUELA==",
+                    "data" : "SWlwMGJxHzNqGlBIPQdN8wvwCxluvwFic+Z3KBSS3mg=",
+                    "keySize" : 16,
+                    "purpose" : "idm.config.encryption",
+                    "iv" : "GPuMD4DulQhYTy447Li2CA==",
+                    "mac" : "H55vJMco0AWu/GpjCjjwOQ=="
+                }
+            }
+        },
+        "password" : {
+            "$crypto" : {
+                "type" : "x-simple-encryption",
+                "value" : {
+                    "cipher" : "AES/CBC/PKCS5Padding",
+                    "stableId" : "openidm-sym-default",
+                    "salt" : "mZYiuRjK6ttw5cHMg7Iatg==",
+                    "data" : "1tIiwSly4ewY0P9MUU5Xwl0UxxK/HAhQti1oiSsO+dXSviyVCUUL2ry95bhtU1t23aAXy0OwM8BYMBO7ImhNrU9DSKqV+Kf8oTqu82gTrUQ=",
+                    "keySize" : 16,
+                    "purpose" : "idm.config.encryption",
+                    "iv" : "HV6cXKnUXS009cgaGJsHpQ==",
+                    "mac" : "il9wHM0Pkm/Irmq/mhdPvw=="
+                }
+            }
+        },
+        "clientId" : "testclient",
+        "groupId" : "testgroup",
+        "topic" : "testfrim2"
+    },
+    "enabled" : true,
+    "objectTypes" : {
+        "Account" : {
+            "$schema" : "http://json-schema.org/draft-03/schema",
+            "type" : "object",
+            "id" : "__ACCOUNT__",
+            "nativeType" : "__ACCOUNT__",
+            "properties" : {
+                "lastName" : {
+                    "type" : "string",
+                    "required" : false,
+                    "nativeName" : "lastName",
+                    "nativeType" : "string",
+                    "flags" : [ ],
+                    "runAsUser" : false
+                },
+                "firstName" : {
+                    "type" : "string",
+                    "nativeName" : "firstName",
+                    "nativeType" : "string"
+                },
+                "__NAME__" : {
+                    "type" : "string",
+                    "nativeName" : "__NAME__",
+                    "nativeType" : "string"
+                },
+                "email" : {
+                    "type" : "string",
+                    "nativeName" : "email",
+                    "nativeType" : "string",
+                    "required" : false
+                }
+            }
+        }
+    }
+}

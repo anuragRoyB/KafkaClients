@@ -1,0 +1,19 @@
+{
+    "isCron" : true,
+    "enabled" : true,
+    "persisted" : true,
+    "type" : "cron",
+    "misfirePolicy" : "fireAndProceed",
+    "invokeService" : "provisioner",
+    "invokeLogLevel" : "info",
+    "timeZone" : null,
+    "startTime" : "2021-03-15T18:35:00+11:00",
+    "endTime" : null,
+    "concurrentExecution" : false,
+    "invokeContext" : {
+        "action" : "liveSync",
+        "source" : "system/kafkatest/Account"
+    },
+    "schedule" : "0 */1 * * * ?"
+}
+
